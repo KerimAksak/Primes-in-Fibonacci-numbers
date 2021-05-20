@@ -4,9 +4,11 @@
 ; EXAMPLE INPUT: 1.123
 DATA SEGMENT
     DIGIT DW 0 ; Number of digits 
+    PreviousValue DW 10
     MSG1 DB 10,13,"Please enter a number (Max: 65.536 <2^16>)...: $"
     MSG2 DB 10,13,"ERROR! <Two points cannot be made one after the other.> $"   
-    MSG3 DB 10,13,"Control message... $"
+    MSG3 DB 10,13,"Input value received... $"
+    MSG4 DB 10,13,"FIBO continuation... $"
 ENDS
 
 
@@ -66,24 +68,38 @@ START:
         MOV CX, DIGIT
         MOV DI, 1 ; Let's start directly at 10^1. Then we add the value 10^0 to the result.
          
-        MOV BYTE PTR [BP-28],1
-        MOV DI,1
+        MOV BYTE PTR [BP-28],1 ; Counter to compare the number of digits
+        MOV DI,1 
+        POP BX ; Let's take the first element in the stack. 10^0 value will be added directly! 
+        MOV AX,PreviousValue
         JMP convertToHex
         
     convertToHex: ; Since the entered numbers consist of a single digit in decimal, 
                   ;  we keep this by converting to hexadecimal.
         
-        MOV CX,WORD PTR [BP-28]
+        POP SI    ; Multiplying other values by their base values.
         
-        MOV AX,10
-        exponential: ; Loops according to the value of 10^n.
-            MUL DI 
-            LOOP exponential
-            
+        MUL DI    ; DI = 10^1, 10^2, ...
+        MOV PreviousValue, AX ; Since the base product progresses as 10^n (n = 1,2,3, ...), 
+                              ;   we constantly keep the previous value and multiply it by it.
+                              
+        MUL SI
+        ADD WORD PTR [BP-36], AX ; Summing the base product results. (x*10^1 + x*10^2 + ...)
+        MOV AX, PreviousValue
         MOV DI,10
         INC BYTE PTR [BP-28]
+        MOV DX, WORD PTR [BP-28]  
+        CMP DX, DIGIT ; If our counter reaches the step value, the process is complete.
+        JE  fiboLabel
         JMP convertToHex
-
+        
+     fiboLabel:
+        ADD WORD PTR [BP-36],BX ; Let's add the value 10 ^ 0.
+        LEA DX,MSG4
+        
+        MOV AH,9
+        INT 21H
+            
                     
 END START
                                    
