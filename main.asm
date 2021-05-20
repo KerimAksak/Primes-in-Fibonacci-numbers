@@ -138,7 +138,7 @@ FIBO PROC NEAR
         MOV  BX, SI
         MOV  BP, 10
         
-    loopPrint:  
+    loopPrint: 
         MOV  AX, CX   ; Need to divide cx by 10 first
         XOR  DX, DX
         DIV  BP
@@ -153,10 +153,11 @@ FIBO PROC NEAR
         MOV  AH, 2H       
             
         ; control place SI ???
-         
+        
         INT  21H
         CMP  CX, 1       ; Should end? - ZF is triggered when flag is 1!
-        ; Next case: JMP Division by 2 rule  
+        ; Next case: JMP Division by 2 rule
+          
         JNZ  loopPrint
 
         ADD  DI, SI      ; Fibonacci(n) = Fibonacci(n-1) + Fibonacci(n-2)
@@ -167,9 +168,26 @@ FIBO PROC NEAR
         CMP SI,InputValue ; first input > second input
         JG  fiboDone
         
+        CALL ENDL 
         JMP  loopA
     done:   
-FIBO ENDP           
+FIBO ENDP
+
+
+ENDL PROC NEAR      ; a new line function
+    PUSH DX         ; don't lose values
+    PUSH AX         ; don't lose values
+    MOV DL, 0DH     ; \r
+    MOV AH, 02H  
+    INT 21h  
+    MOV DL, 0AH     ; \n
+    MOV AH, 02H
+    INT 21H 
+    POP AX
+    POP DX
+    RET
+ENDL ENDP
+
 ; end of process
 
 
