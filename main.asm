@@ -1,77 +1,50 @@
-;name "hi-world"
+;author: KerimAksak
    
-; macros
-WRITE_STRING MACRO string_offset     
-    MOV DX, OFFSET user_message
-    MOV AH, 09H
-    INT 21H  
-    ENDM ; end macro 
-; end of macros
+; INPUT RULE: Period must be added for each digit of numbers.
+; EXAMPLE INPUT: 1.123
+DATA SEGMENT
+    MSG1 DB 10,13,"Please enter a number (Max: 65.536 <2^16>)...: $"
+    MSG2 DB 10,13,"ERROR! <Two points cannot be made one after the other.> $"   
+ENDS
 
 
-; start main
-
-org 100h  
-
-.data
-    user_message DB 'Please give me a number...: ','$'
-
-.code 
-
+CODE SEGMENT
+ASSUME DS:DATA CS:CODE
+START:
     PUSH    BP     ; local variable
-    MOV     BP, SP ; local variable
-    
-    WRITE_STRING user_message 
-    
-      
-    MOV AH, 1H  ; keyboard input subprogram
-    INT 21H     ; read character into AL  
-      
-    
+    MOV     BP, SP ; local variable 
    
-    
-    MOV BYTE PTR [BP-20], AL ; user input value into WORD PTR [BP-4]
-    MOV DI, WORD PTR [BP-20]
-    
-    
-    CALL ASCII2DEC
-    
-    CALL ENDL   ; new line process
-    
-    MOV AH, 2H      ; character output subprogram 
-    MOV DL, AL      ; copy character to DL 
-    INT 21H         ; display character in DL 
-
-ret 
-
-; end of main
-
-
-
-
-; start process
-
-ENDL PROC NEAR      ; a new line function
-    PUSH DX         ; don't lose values
-    PUSH AX         ; don't lose values
-    MOV DL, 0DH     ; \r
-    MOV AH, 02H  
-    INT 21h  
-    MOV DL, 0AH     ; \n
-    MOV AH, 02H
+    MOV AX,DATA
+    MOV DS,AX
+    LEA DX,MSG1
+    ;print screen
+    MOV AH,9
     INT 21H 
-    POP AX
-    POP DX
-    RET
-ENDL ENDP           ; end process     
+              
+    MOV CX, 6H ; loop for 6 value(dot+number)
+    label:
+        ; into data <data is in AL>
+        MOV AH,1
+        INT 21H
+            
+        CMP AL, 2EH ; ASCII(dot<.>) = 2E  
+        JA above2E  ; If the entered value is greater than 2E, jump to above2E
+        
+        CMP BYTE PTR [BP-20], AL
+        JE equalPoint ; If the entered two value equal, jump to equalPoint (ONLY ABOVE 2E VALUE) 
+        MOV BYTE PTR [BP-20], AL
+        LOOP label
 
+    above2E: ; ASCII(0-9 number) = 30-39 / If the number is entered, proceed without checking
+        MOV BYTE PTR [BP-20], AL
+        SUB AL,30H
+        LOOP label
 
-ASCII2HEX PROC NEAR
-    
-    MOV WORD PTR [BP-20], DI
-    SUB WORD PTR [BP-20], 30H
-    RET
-    
-ASCII2DEC ENDP
-; end of process
+    equalPoint: ; If there are two dots, show an error message and end to process
+        LEA DX,MSG2
+        MOV AH,9
+        INT 21H
+        END START
+                
+END START
                                    
