@@ -7,6 +7,7 @@ DATA SEGMENT
     DIGIT DW 0 ; Number of digits 
     PreviousValue DW 10 
     INPUTVALUE DW 0
+    SUMOFNUMBERS DB 0
     TEMP1 DW ?
     TEMP2 DW ?
     TEMP3 DW ?
@@ -130,6 +131,7 @@ FIBO PROC NEAR
     loopA:     
         MOV AX, SI   ; Prepare for counting digits
         MOV BX, 10   ; Print as decimal
+        MOV SUMOFNUMBERS, 0 ; Zeroing the sum for each number 
         
     loopDigit:  
         XCHG AX, CX  ; Calculate 10^n_digits
@@ -154,7 +156,8 @@ FIBO PROC NEAR
         MOV  BX, DX   ; The next number to be printed 
         MOV  DL, AL   ; The quotient, current digit 
         ; Every digit -DL-
-        MOV BYTE PTR [BP-28], DL ;Last digit
+        MOV BYTE PTR [BP-28], DL ; Last digit
+        ADD SUMOFNUMBERS, DL     ; Addition of numbers
  
         ADD  DL, 30H  ; convert to ASCII
         MOV  AH, 2H       
@@ -170,6 +173,9 @@ FIBO PROC NEAR
         MOV TEMP3, DX
         JE CALL DIVISIONBYTWO
         afterDivisionIntoTwoRet:
+        CMP  CX, 1
+        JE CALL DIVISIONBYTHREE
+        afterDivisionIntoThreeRet:
         MOV AX, TEMP1 
         MOV BX, TEMP2
         MOV DX, TEMP3 
@@ -218,17 +224,41 @@ DIVISIONBYTWO PROC NEAR
     CMP AH, 0
     JE  dividedByTwo
     
-    JMP notDivided
+    JMP notDividedTwo
         dividedByTwo:
             XOR AH, AH
             PRINT ' "2 Divided"'
             ;LEA DX,MSG6
             ;MOV AH,9
             ;INT 21H  
-    notDivided:            
+    notDividedTwo:            
     
     JMP afterDivisionIntoTwoRet 
 DIVISIONBYTWO ENDP
+
+
+DIVISIONBYTHREE PROC NEAR 
+    XOR AX, AX ; clear
+    XOR BX, BX ; clear
+    XOR DX, DX ; clear
+     
+    MOV AL, SUMOFNUMBERS ; Sum of number
+    MOV BL, 3 ; division value
+    DIV BL
+    CMP AH, 0
+    JE  dividedByThree
+    
+    JMP notDividedThree
+        dividedByThree:
+            XOR AH, AH
+            PRINT ' "3 Divided"'
+            ;LEA DX,MSG6
+            ;MOV AH,9
+            ;INT 21H  
+    notDividedThree:            
+    
+    JMP afterDivisionIntoThreeRet 
+DIVISIONBYTHREE ENDP
 
 ; end of process
 
