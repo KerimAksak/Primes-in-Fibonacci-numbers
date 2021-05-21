@@ -2,10 +2,14 @@
    
 ; INPUT RULE: Period must be added for each digit of numbers.
 ; EXAMPLE INPUT: 1.123
+include 'emu8086.inc'
 DATA SEGMENT
     DIGIT DW 0 ; Number of digits 
     PreviousValue DW 10 
     INPUTVALUE DW 0
+    TEMP1 DW ?
+    TEMP2 DW ?
+    TEMP3 DW ?
     MSG1 DB 10,13,"Please enter a number (Max: 65.536 <2^16>)...: $"
     MSG2 DB 10,13,"ERROR! <Two points cannot be made one after the other.> $"   
     MSG3 DB 10,13,"Input value received... $"
@@ -104,6 +108,7 @@ START:
         ; print screen
         MOV AH,9
         INT 21H
+        CALL ENDL
         CALL FIBO
         
      fiboDone:       
@@ -149,6 +154,8 @@ FIBO PROC NEAR
         MOV  BX, DX   ; The next number to be printed 
         MOV  DL, AL   ; The quotient, current digit 
         ; Every digit -DL-
+        MOV BYTE PTR [BP-28], DL ;Last digit
+ 
         ADD  DL, 30H  ; convert to ASCII
         MOV  AH, 2H       
             
@@ -156,8 +163,19 @@ FIBO PROC NEAR
         
         INT  21H
         CMP  CX, 1       ; Should end? - ZF is triggered when flag is 1!
+        ; All division rules
         ; Next case: JMP Division by 2 rule
-          
+        MOV TEMP1, AX 
+        MOV TEMP2, BX
+        MOV TEMP3, DX
+        JE CALL DIVISIONBYTWO
+        afterDivisionIntoTwoRet:
+        MOV AX, TEMP1 
+        MOV BX, TEMP2
+        MOV DX, TEMP3 
+        
+        
+        CMP  CX, 1  
         JNZ  loopPrint
 
         ADD  DI, SI      ; Fibonacci(n) = Fibonacci(n-1) + Fibonacci(n-2)
@@ -170,7 +188,8 @@ FIBO PROC NEAR
         
         CALL ENDL 
         JMP  loopA
-    done:   
+    done:
+        RET   
 FIBO ENDP
 
 
@@ -187,6 +206,29 @@ ENDL PROC NEAR      ; a new line function
     POP DX
     RET
 ENDL ENDP
+
+DIVISIONBYTWO PROC NEAR 
+    XOR AX, AX ; clear
+    XOR BX, BX ; clear
+    XOR DX, DX ; clear
+     
+    MOV AL, BYTE PTR [BP-28] ; Last digit value
+    MOV BL, 2 ; division value
+    DIV BL
+    CMP AH, 0
+    JE  dividedByTwo
+    
+    JMP notDivided
+        dividedByTwo:
+            XOR AH, AH
+            PRINT ' "2 Divided"'
+            ;LEA DX,MSG6
+            ;MOV AH,9
+            ;INT 21H  
+    notDivided:            
+    
+    JMP afterDivisionIntoTwoRet 
+DIVISIONBYTWO ENDP
 
 ; end of process
 
