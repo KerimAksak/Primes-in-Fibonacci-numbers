@@ -66,9 +66,9 @@ START:
         INT 21H
         
     equalEnter:
-        LEA DX,MSG3
-        MOV AH,9
-        INT 21H
+        ;LEA DX,MSG3
+        ;MOV AH,9
+        ;INT 21H
         JMP continue
         ; The continuation of the program should be here
         
@@ -110,10 +110,10 @@ START:
         PUSH    BP     ; local variable
         MOV     BP, SP ; local variable 
         
-        LEA DX,MSG4
+        ;LEA DX,MSG4
         ; print screen
-        MOV AH,9
-        INT 21H
+        ;MOV AH,9
+        ;INT 21H
         CALL ENDL
         CALL FIBO
         
