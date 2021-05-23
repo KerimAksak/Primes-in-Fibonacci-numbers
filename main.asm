@@ -11,6 +11,7 @@ DATA SEGMENT
     TEMP1 DW ?
     TEMP2 DW ?
     TEMP3 DW ?
+    TEMP4 DW ?
     MSG1 DB 10,13,"Please enter a number (Max: 65.536 <2^16>)...: $"
     MSG2 DB 10,13,"ERROR! <Two points cannot be made one after the other.> $"   
     MSG3 DB 10,13,"Input value received... $"
@@ -105,6 +106,10 @@ START:
         XCHG BX,WORD PTR [BP-36] 
         MOV INPUTVALUE, BX
         
+        ; clear stack
+        PUSH    BP     ; local variable
+        MOV     BP, SP ; local variable 
+        
         LEA DX,MSG4
         ; print screen
         MOV AH,9
@@ -167,20 +172,25 @@ FIBO PROC NEAR
         INT  21H
         CMP  CX, 1       ; Should end? - ZF is triggered when flag is 1!
         ; All division rules
+        MOV BYTE PTR [BP-44], 1
         ; Next case: JMP Division by 2 rule
-        MOV TEMP1, AX 
+        MOV TEMP1, AX ; Do not lose values
         MOV TEMP2, BX
         MOV TEMP3, DX
+        MOV TEMP4, CX
         JE CALL DIVISIONBYTWO
         afterDivisionIntoTwoRet:
         CMP  CX, 1
         JE CALL DIVISIONBYTHREE
         afterDivisionIntoThreeRet:
+        CMP  CX, 1 
+        JE CALL PRIMECONTROL  
+        postPrimeRet:   
         MOV AX, TEMP1 
         MOV BX, TEMP2
-        MOV DX, TEMP3 
-        
-        
+        MOV DX, TEMP3
+        MOV CX, TEMP4 
+               
         CMP  CX, 1  
         JNZ  loopPrint
 
@@ -260,9 +270,47 @@ DIVISIONBYTHREE PROC NEAR
     JMP afterDivisionIntoThreeRet 
 DIVISIONBYTHREE ENDP
 
+PRIMECONTROL PROC NEAR
+    XOR AX, AX ; clear
+    XOR BX, BX ; clear
+    XOR DX, DX ; clear   
+    ; SI control
+    MOV AX, SI ; control number
+    MOV CX, SI ; loop for number
+    MOV BX, 1  ; division border 
+    mov BYTE PTR [BP-44], 0 ; If BYTE PTR [BP-44] is 2, the number is prime, if BYTE PTR [BP-44] is more than 2, it is not.
+    
+    edgeLoop:
+        MOV AX, SI ; prime check number 
+        MOV DX, 0  ; clear
+        DIV BX     ; 1 < BX <primt check number
+        CMP DL, 0  ; if it divides completely
+        JE divided
+        nextNum:
+        INC BX
+        LOOP edgeLoop
+        
+        JMP notDivided
+            divided:
+                INC BYTE PTR [BP-44] ;++1 for the divisible number 
+                JMP nextNum
+    notDivided:
+    
+    
+    CMP BYTE PTR [BP-44],2  ; If it only has two divisors. (1 and prime chech number)
+    JE crossedTheBorder 
+    
+    JMP notCrossTheBorder
+        crossedTheBorder:
+        PRINT ' PRIME'    ; Prime print on screen 
+    
+    notCrossTheBorder:
+    JMP postPrimeRet
+PRIMECONTROL ENDP
+
 ; end of process
-
-
-       endOfFibonacci:            
+   
+   
+    endOfFibonacci:            
 END START
                                    
