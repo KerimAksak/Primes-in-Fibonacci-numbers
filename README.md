@@ -6,18 +6,26 @@
 <br>
 **2- The transactions will be brought to the 32bit level.**
 
-**PROJECT PURPOSE:** An 8086 assembly will be implemented that lists all Fibonacci numbers that are prime numbers up to a positive integer entered in the 8086 architecture using EMU8086.
+## **PROJECT PURPOSE:** An 8086 assembly will be implemented that lists all Fibonacci numbers that are prime numbers up to a positive integer entered in the 8086 architecture using EMU8086.
 
 
 ### 1- First of all, the number entry query will be displayed on the screen as shown below.
 
-![img1](http://url/to/img.png)
+<br>
+
+![img1](https://raw.githubusercontent.com/KerimAksak/80-86/main/img/img1.jpg?token=AMFVIYLUHID3RTHCUUFCJ63AVNU2Q)
+
+<br>
 
 ### 2- User will enter an integer value up to the maximum number value as given below and press "Enter". It should be foreseen that the user may make wrong entries and in this case, an error message should be given and the user should be informed.
 
-![img2](http://url/to/img.png)
+<br>
+
+![img2](https://raw.githubusercontent.com/KerimAksak/80-86/main/img/img2.jpg?token=AMFVIYJ3UVXHG3SX3GC6LQDAVNU3Q)
 
 ### 3- The program will use the divisibility rules summarized in Table 1 to check whether the Fibonacci numbers from F (0) = 1 to the entered number are prime.
+
+<br>
 
 | Number | Rule |
 | --- | --- |
@@ -32,6 +40,10 @@
 | 19 | When we write the number as X = 10a + b, it can be divided if the number a + 2b is divided by 19 without a remainder. |
 | 23 | When we write the number as X = 10a + b, it can be divided if the number a + 7b is divided by 23 without a remainder.  |
 
+<br>
+
 **If a result cannot be obtained as a result of the rules, the classical prime number calculation method should be used.**
 
-![img3](http://url/to/img.png)
+<br>
+
+![img3](https://raw.githubusercontent.com/KerimAksak/80-86/main/img/img3.jpg?token=AMFVIYJXG756PMZYS7TZLR3AVNU4G)
