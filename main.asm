@@ -33,7 +33,7 @@ START:
     MOV AH,9
     INT 21H 
               
-    MOV CX, 6H ; loop for 6 value(dot+number)
+    MOV CX, 7H ; loop for 6 value(dot+number)
     label:
         ; into data <data is in AL>
         MOV AH,1
@@ -237,7 +237,7 @@ DIVISIONBYTWO PROC NEAR
     JMP notDividedTwo
         dividedByTwo:
             XOR AH, AH
-            PRINT ' "2 Divided"'
+            ;PRINT ' "2 Divided"'
             ;LEA DX,MSG6
             ;MOV AH,9
             ;INT 21H  
@@ -261,7 +261,7 @@ DIVISIONBYTHREE PROC NEAR
     JMP notDividedThree
         dividedByThree:
             XOR AH, AH
-            PRINT ' "3 Divided"'
+            ;PRINT ' "3 Divided"'
             ;LEA DX,MSG6
             ;MOV AH,9
             ;INT 21H  
