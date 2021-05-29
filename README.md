@@ -13,7 +13,7 @@
 
 <br>
 
-![img1](https://raw.githubusercontent.com/KerimAksak/80-86/main/img/img1.jpg?token=AMFVIYLUHID3RTHCUUFCJ63AVNU2Q)
+![img1](https://raw.githubusercontent.com/KerimAksak/80-86/main/img/img1.jpg?token=AMFVIYIY4H4EVMX4V6KGZI3AWJX34)
 
 <br>
 
@@ -21,7 +21,7 @@
 
 <br>
 
-![img2](https://raw.githubusercontent.com/KerimAksak/80-86/main/img/img2.jpg?token=AMFVIYJ3UVXHG3SX3GC6LQDAVNU3Q)
+![img2](https://raw.githubusercontent.com/KerimAksak/80-86/main/img/img2.jpg?token=AMFVIYNEQTOOU3MTUY4HKMDAWJX56)
 
 ### 3- The program will use the divisibility rules summarized in Table 1 to check whether the Fibonacci numbers from F (0) = 1 to the entered number are prime.
 
@@ -46,4 +46,4 @@
 
 <br>
 
-![img3](https://raw.githubusercontent.com/KerimAksak/80-86/main/img/img3.jpg?token=AMFVIYJXG756PMZYS7TZLR3AVNU4G)
+![img3](https://raw.githubusercontent.com/KerimAksak/80-86/main/img/img3.jpg?token=AMFVIYK6GCGYHZV7HV3KHUTAWJX7C)
